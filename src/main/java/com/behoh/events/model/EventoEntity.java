@@ -1,8 +1,11 @@
 package com.behoh.events.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.util.List;
  * Classe responsável por mapear a tabela Evento do banco de dados.
  */
 @Data @Builder
+@NoArgsConstructor @AllArgsConstructor
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventoEntity {
@@ -29,8 +33,10 @@ public class EventoEntity {
     private LocalDateTime fim;
 
     @ManyToMany(mappedBy = "eventosInscritos")
+    @JsonIgnoreProperties({"eventosInscritos", "participaEvento"})
     private List<UsuarioEntity> usuariosInscritos;
 
     @OneToMany(mappedBy = "participaEvento")
+    @JsonIgnoreProperties({"eventosInscritos", "participaEvento"})
     private List<UsuarioEntity> usuariosParticipando;
 }
