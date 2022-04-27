@@ -1,5 +1,7 @@
 package com.behoh.events.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,8 +10,9 @@ import java.util.List;
 /**
  * Classe responsável por mapear a tabela Usuario do banco de dados.
  */
-@Data
+@Data @Builder
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UsuarioEntity {
 
     @Id
