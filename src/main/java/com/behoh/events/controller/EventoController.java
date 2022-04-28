@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Mapeamento de requisições REST referente a tabela Evento.
@@ -54,6 +55,34 @@ public class EventoController {
         return new ResponseEntity<>(
                 eventoCriado,
                 HttpStatus.CREATED);
+    }
+
+    @ApiOperation("Lista todos os eventos.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Lista de eventos.")
+    })
+    @GetMapping
+    public ResponseEntity listarTodos() {
+        return ResponseEntity.ok(
+                eventoService.findAll()
+        );
+    }
+
+    @ApiOperation("Busca evento por ID.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Evento encontrado."),
+            @ApiResponse(code = 404, message = "Evento não encontrado.")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity buscarPorId(@PathVariable Integer id){
+
+        Optional<EventoEntity> evento = eventoService.find(id);
+
+        if(evento.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(evento.get());
     }
 
 }

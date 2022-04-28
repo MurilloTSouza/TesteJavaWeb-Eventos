@@ -5,6 +5,7 @@ import com.behoh.events.repository.EventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,6 +34,14 @@ public class EventoService {
      */
     public Optional<EventoEntity> find(Integer id) {
         return eventoRepository.findById(id);
+    }
+
+    /**
+     * Lista todos os eventos.
+     * @return Lista de eventos.
+     */
+    public List<EventoEntity> findAll(){
+        return eventoRepository.findAll();
     }
 
 }
