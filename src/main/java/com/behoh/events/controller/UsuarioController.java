@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -66,6 +63,23 @@ public class UsuarioController {
         return new ResponseEntity<>(
                 usuarioCriado,
                 HttpStatus.CREATED);
+    }
+
+    @ApiOperation("Busca usuário por ID.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Usuário encontrado."),
+            @ApiResponse(code = 404, message = "Usuário não encontrado.")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity buscarPorId(@PathVariable Integer id){
+
+        Optional<UsuarioEntity> usuario = usuarioService.find(id);
+
+        if(usuario.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(usuario.get());
     }
 
     @ApiOperation("Inscreve usuário em um evento.")
