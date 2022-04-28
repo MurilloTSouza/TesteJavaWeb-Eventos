@@ -1,6 +1,7 @@
 package com.behoh.events.dto;
 
 import com.behoh.events.model.UsuarioEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class UsuarioCadastroDTO {
 
+    @ApiModelProperty(value = "Nome do usuário.", example = "John Doe")
     @NotBlank(message = "'nome' e obrigatorio.")
     private String nome;
 

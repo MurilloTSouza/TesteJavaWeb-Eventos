@@ -7,6 +7,10 @@ import com.behoh.events.model.UsuarioEntity;
 import com.behoh.events.service.EventoService;
 import com.behoh.events.service.UsuarioService;
 import com.behoh.events.utils.BindingResultUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,7 @@ import java.util.Optional;
 /**
  * Mapeamento de requisições REST referente a tabela Usuario.
  */
+@Api("Informações e operações de usuário, como cadastro, inscrição em eventos, etc.")
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -35,6 +40,11 @@ public class UsuarioController {
     @Autowired
     private EventoService eventoService;
 
+    @ApiOperation("Cadastro de um novo usuário.")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Retorna o usuário cadastro com ID gerado."),
+            @ApiResponse(code = 400, message = "Erro de validação.")
+    })
     @PostMapping("/cadastro")
     public ResponseEntity cadastro(
             @Valid @RequestBody UsuarioCadastroDTO usuarioCadastro,
@@ -58,6 +68,11 @@ public class UsuarioController {
                 HttpStatus.CREATED);
     }
 
+    @ApiOperation("Inscreve usuário em um evento.")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Retorna o usuário com a lista de eventos inscritos."),
+            @ApiResponse(code = 400, message = "Erro de validação.")
+    })
     //TODO: Separar responsábilidade de validações
     @PostMapping("/inscricao")
     public ResponseEntity inscricao(
