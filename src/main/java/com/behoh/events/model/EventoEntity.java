@@ -32,11 +32,15 @@ public class EventoEntity {
     private LocalDateTime inicio;
     private LocalDateTime fim;
 
-    @ManyToMany(mappedBy = "eventosInscritos")
+    @ManyToMany(
+            mappedBy = "eventosInscritos",
+            fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"eventosInscritos", "participaEvento"})
     private List<UsuarioEntity> usuariosInscritos;
 
-    @OneToMany(mappedBy = "participaEvento")
+    @OneToMany(
+            mappedBy = "participaEvento",
+            fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"eventosInscritos", "participaEvento"})
     private List<UsuarioEntity> usuariosParticipando;
 }

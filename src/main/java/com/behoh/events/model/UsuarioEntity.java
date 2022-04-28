@@ -26,7 +26,7 @@ public class UsuarioEntity {
     private String nome;
 
     // lista de eventos em que o usuario está inscrito
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "inscricoes_eventos",
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -36,7 +36,7 @@ public class UsuarioEntity {
     private List<EventoEntity> eventosInscritos;
 
     // evento em que o usuário está participando
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"usuariosInscritos", "usuariosParticipando"})
     private EventoEntity participaEvento;
 
