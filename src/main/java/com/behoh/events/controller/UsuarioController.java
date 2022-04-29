@@ -6,7 +6,6 @@ import com.behoh.events.model.EventoEntity;
 import com.behoh.events.model.UsuarioEntity;
 import com.behoh.events.service.EventoService;
 import com.behoh.events.service.UsuarioService;
-import com.behoh.events.utils.BindingResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -14,7 +13,6 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,24 +42,12 @@ public class UsuarioController {
     })
     @PostMapping("/cadastro")
     public ResponseEntity cadastro(
-            @Valid @RequestBody UsuarioCadastroDTO usuarioCadastro,
-            BindingResult bindingResult){
+            @Valid @RequestBody UsuarioCadastroDTO usuarioCadastro){
 
-        // se tiver algum erro de validação
-        // retorna BAD_REQUEST
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(
-                    BindingResultUtil.listErrors(bindingResult),
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-
-        // se nao houver erros, persiste usuario no banco
-        UsuarioEntity usuarioCriado =
-                usuarioService.save(usuarioCadastro.toEntity());
+        UsuarioEntity usuario = usuarioCadastro.toEntity();
 
         return new ResponseEntity<>(
-                usuarioCriado,
+                usuarioService.save(usuario),
                 HttpStatus.CREATED);
     }
 
@@ -90,18 +76,7 @@ public class UsuarioController {
     //TODO: Separar responsábilidade de validações
     @PostMapping("/inscricao")
     public ResponseEntity inscricao(
-            @Valid @RequestBody UsuarioEventoIdDTO inscricao,
-            BindingResult bindingResult){
-
-        // ===========================
-        //     Erros de validação
-        // ===========================
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(
-                    BindingResultUtil.listErrors(bindingResult),
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+            @Valid @RequestBody UsuarioEventoIdDTO inscricao){
 
         List<String> erros = new ArrayList<>();
 
