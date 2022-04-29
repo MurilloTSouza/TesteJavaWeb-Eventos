@@ -2,3 +2,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+  # Ignore no serialization errors by @JsonIgnoreProperties
+  jackson:
+    serialization:
+      fail-on-empty-beans: false

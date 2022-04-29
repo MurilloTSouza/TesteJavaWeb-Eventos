@@ -85,4 +85,40 @@ public class UsuarioController {
         );
     }
 
+    @ApiOperation("Cancela inscrição de usuário em um evento.")
+    @DeleteMapping("/inscricao")
+    public ResponseEntity cancelarInscricao(
+            @Valid @RequestBody UsuarioEventoIdDTO inscricao)
+            throws Exception{
+
+        Integer usuario_id = inscricao.getUsuario_id();
+        Integer evento_id = inscricao.getEvento_id();
+
+        UsuarioEntity usuario = usuarioService.find(usuario_id);
+        EventoEntity evento = eventoService.find(evento_id);
+
+        UsuarioEntity usuarioAtualizado =
+                usuarioService.cancelarInscricao(usuario, evento);
+
+        return ResponseEntity.ok(usuarioAtualizado);
+    }
+
+    @ApiOperation("Entrada de usuário em evento")
+    @PostMapping("/entrar")
+    public ResponseEntity entrar(
+            @Valid @RequestBody UsuarioEventoIdDTO inscricao)
+            throws Exception{
+
+        Integer usuario_id = inscricao.getUsuario_id();
+        Integer evento_id = inscricao.getEvento_id();
+
+        UsuarioEntity usuario = usuarioService.find(usuario_id);
+        EventoEntity evento = eventoService.find(evento_id);
+
+        UsuarioEntity usuarioAtualizado =
+                usuarioService.entrarEmEvento(usuario, evento);
+
+        return ResponseEntity.ok(usuarioAtualizado);
+    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 /**
@@ -51,7 +52,7 @@ public class UsuarioService {
      * @param usuario Usuário a ser inscrito.
      * @param evento Evento a se inscrever.
      * @return Usuário inscrito em evento.
-     * @throws RegraDeNegocioException Usuário já inscrito ou Evento já iniciado.
+     * @throws RegraDeNegocioException Quebra de regras de negocio.
      */
     public UsuarioEntity inscreverEm(
             UsuarioEntity usuario, EventoEntity evento)
@@ -81,11 +82,85 @@ public class UsuarioService {
     }
 
     /**
+     * Cancela inscriçao de usuário em evento.
+     * @param usuario Usuário a remover inscriçao.
+     * @param evento Evento a ser removido.
+     * @return Usuário atualizado
+     * @throws RegraDeNegocioException Quebra de regras de negocio.
+     */
+    public UsuarioEntity cancelarInscricao
+            (UsuarioEntity usuario, EventoEntity evento)
+            throws RegraDeNegocioException{
+
+        // --- Usuario ja entrou no evento? ---
+        EventoEntity participandoEm = usuario.getParticipaEvento();
+        if(participandoEm != null && participandoEm.getId().equals(evento.getId()) ){
+            throw new RegraDeNegocioException("Usuário já está participando do evento.");
+        }
+
+        // --- Usuário está inscrito no evento? ---
+        if(!estaInscritoEm(usuario,evento)){
+            throw new RegraDeNegocioException("Usuário não está inscrito no evento.");
+        }
+
+        // --- Persistindo cancelamento ----
+        usuario.getEventosInscritos().removeIf(
+                // removendo evento da lista de inscricao
+                e -> e.getId().equals(evento.getId())
+        );
+
+        return save(usuario);
+    }
+
+    /**
+     * Persiste entrada de usuário em evento.
+     * @param usuario Usuário a entrar.
+     * @param evento Evento a ser entrado.
+     * @return Usuário atualizado.
+     * @throws RegraDeNegocioException Quebra de regras de negócio.
+     */
+    public UsuarioEntity entrarEmEvento
+            (UsuarioEntity usuario, EventoEntity evento)
+            throws RegraDeNegocioException{
+
+        // --- Usu já está no evento? ---
+        if( usuario.getParticipaEvento() != null &&
+                usuario.getParticipaEvento().getId().equals(evento.getId())){
+            throw new RegraDeNegocioException("Usuário já está participando do evento.");
+        }
+
+        // --- Usuário inscrito no evento? ---
+        if(!estaInscritoEm(usuario, evento)){
+            throw new RegraDeNegocioException("Usuário não está inscrito no evento.");
+        }
+
+        // --- Cedo demais para entrar? ---
+        LocalDateTime agora = LocalDateTime.now();
+        Long  minutosDeDiferenca = ChronoUnit.MINUTES.between(agora, evento.getInicio());
+        if(minutosDeDiferenca > 60) {
+            throw new RegraDeNegocioException(
+                    "Só é possível entrar no evento 1 hora antes do início." +
+                    "(início em: "+evento.getInicio()+")");
+        }
+
+        // --- Evento já terminou? ---
+        if(evento.getFim().isBefore(agora)){
+            throw new RegraDeNegocioException("Evento já terminou.");
+        }
+
+        // --- Persistindo entrada ---
+        usuario.setParticipaEvento(evento);
+
+        return save(usuario);
+    }
+
+    /**
      * Confere se usuario está inscrito em evento com ID especificado.
      * @param eventoID ID do evento a ser conferido.
      */
     //TODO: mudar lógica para utilizar query de UsuarioRepository
     public boolean estaInscritoEm(UsuarioEntity usuario, EventoEntity evento){
+
         // filtrando lista por ID e conferindo se exite resultado
         return usuario.getEventosInscritos()
                 .stream().filter(e -> e.getId().equals(evento.getId()))
