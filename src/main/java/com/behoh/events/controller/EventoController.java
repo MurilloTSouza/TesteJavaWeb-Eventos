@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  * Mapeamento de requisições REST referente a tabela Evento.
@@ -60,15 +59,10 @@ public class EventoController {
             @ApiResponse(code = 404, message = "Evento não encontrado.")
     })
     @GetMapping("/{id}")
-    public ResponseEntity buscarPorId(@PathVariable Integer id){
+    public ResponseEntity buscarPorId(@PathVariable Integer id)
+            throws Exception{
 
-        Optional<EventoEntity> evento = eventoService.find(id);
-
-        if(evento.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        return ResponseEntity.ok(evento.get());
+        return ResponseEntity.ok( eventoService.find(id) );
     }
 
 }

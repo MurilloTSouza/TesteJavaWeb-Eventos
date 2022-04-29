@@ -2,6 +2,7 @@ package com.behoh.events.controller;
 
 import com.behoh.events.dto.UsuarioEventoIdDTO;
 import com.behoh.events.dto.UsuarioCadastroDTO;
+import com.behoh.events.exception.EntidadeNaoEncontradaException;
 import com.behoh.events.model.EventoEntity;
 import com.behoh.events.model.UsuarioEntity;
 import com.behoh.events.service.EventoService;
@@ -16,10 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Mapeamento de requisições REST referente a tabela Usuario.
@@ -57,15 +54,10 @@ public class UsuarioController {
             @ApiResponse(code = 404, message = "Usuário não encontrado.")
     })
     @GetMapping("/{id}")
-    public ResponseEntity buscarPorId(@PathVariable Integer id){
+    public ResponseEntity buscarPorId(@PathVariable Integer id)
+            throws EntidadeNaoEncontradaException {
 
-        Optional<UsuarioEntity> usuario = usuarioService.find(id);
-
-        if(usuario.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok( usuarioService.find(id) );
     }
 
     @ApiOperation("Inscreve usuário em um evento.")
@@ -73,80 +65,19 @@ public class UsuarioController {
             @ApiResponse(code = 201, message = "Retorna o usuário com a lista de eventos inscritos."),
             @ApiResponse(code = 400, message = "Erro de validação.")
     })
-    //TODO: Separar responsábilidade de validações
     @PostMapping("/inscricao")
     public ResponseEntity inscricao(
-            @Valid @RequestBody UsuarioEventoIdDTO inscricao){
+            @Valid @RequestBody UsuarioEventoIdDTO inscricao)
+            throws Exception{
 
-        List<String> erros = new ArrayList<>();
+        Integer usuario_id = inscricao.getUsuario_id();
+        Integer evento_id = inscricao.getEvento_id();
 
-        // ============================
-        // Usuario ou Evento nao existe
-        // ============================
-        Optional<UsuarioEntity> usuario =
-                usuarioService.find(inscricao.getUsuario_id());
-        Optional<EventoEntity> evento =
-                eventoService.find(inscricao.getEvento_id());
-        if(usuario.isEmpty()){
-            erros.add("usuário com id fornecido não encontrado.");
-        }
-        if(evento.isEmpty()){
-            erros.add("evento com id fornecido não encontrado.");
-        }
+        UsuarioEntity usuario = usuarioService.find(usuario_id);
+        EventoEntity evento = eventoService.find(evento_id);
 
-        // --- conferindo erros ---
-        // se usuario ou evento nao existir, retorna BAD_REQUEST
-        if(!erros.isEmpty()){
-            return new ResponseEntity(
-                    erros, HttpStatus.BAD_REQUEST);
-        }
-
-        // ... obtendo entidades
-        UsuarioEntity usuarioEntity = usuario.get();
-        EventoEntity eventoEntity = evento.get();
-
-        //============================
-        //        Não há vagas
-        //============================
-        Integer vagasOcupadas = eventoEntity.getUsuariosInscritos().size();
-        Integer vagasDisponiveis = eventoEntity.getVagas() - vagasOcupadas;
-        if(vagasDisponiveis < 1) {
-            erros.add("O evento nao possui mais vagas disponiveis.");
-        }
-
-        //============================
-        //    Evento já inscrito
-        //============================
-
-        // conferindo se usuario ja nao
-        // esta inscrito no evento
-        boolean estaInscrito =
-                usuarioService.estaInscritoEm(
-                        usuarioEntity, eventoEntity.getId());
-        if(estaInscrito){
-            erros.add("Usuário já está inscrito no evento.");
-        }
-
-        //=============================
-        //      Evento já iniciado
-        //=============================
-        // conferindo se evento nao foi iniciado
-        LocalDateTime agora = LocalDateTime.now();
-        if(eventoEntity.getInicio().isBefore(agora)){
-            erros.add("Evento já iniciado.");
-        }
-
-        // --- conferindo erros ---
-        // se usuario ou evento nao existir, retorna BAD_REQUEST
-        if(!erros.isEmpty()){
-            return new ResponseEntity(
-                    erros, HttpStatus.BAD_REQUEST);
-        }
-
-        // ... prosseguindo com persistencia
-        usuarioEntity.getEventosInscritos().add(eventoEntity);
         UsuarioEntity usuarioInscrito =
-                usuarioService.save(usuarioEntity);
+                usuarioService.inscreverEm(usuario, evento);
 
         return new ResponseEntity(
                 usuarioInscrito,

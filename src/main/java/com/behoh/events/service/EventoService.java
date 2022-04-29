@@ -1,5 +1,6 @@
 package com.behoh.events.service;
 
+import com.behoh.events.exception.EntidadeNaoEncontradaException;
 import com.behoh.events.model.EventoEntity;
 import com.behoh.events.repository.EventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,14 @@ public class EventoService {
      * @param id id do evento a ser buscado
      * @return objeto Optional contendo Evento encontrado ou podendo estar vazio caso contrário.
      */
-    public Optional<EventoEntity> find(Integer id) {
-        return eventoRepository.findById(id);
+    public EventoEntity find(Integer id) throws EntidadeNaoEncontradaException {
+        Optional<EventoEntity> evento = eventoRepository.findById(id);
+
+        if(evento.isEmpty()){
+            throw new EntidadeNaoEncontradaException("Evento não encontrado.");
+        }
+
+        return evento.get();
     }
 
     /**
