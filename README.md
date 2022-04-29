@@ -43,24 +43,28 @@ De qualquer forma, segue uma tabela dos caminhos disponiveis até então:
 
 ### -> Evento
 
-| Função   | Método | Caminho              | Parâmetros   | Body (exemplo)                                                                                     |
-|----------|--------|----------------------|--------------|----------------------------------------------------------------------------------------------------|
-| Cadastro | POST   | /api/evento/cadastro | ---          | { "nome": "Evento de Natal", "vagas": 3, "inicio": "2022-12-24T18:30", "fim": "2022-12-25T03:30" } |
-| Listar   | GET    | /api/evento/         | ---          | ---                                                                                                |
-| Buscar   | GET    | /api/evento/{id}     | ID do evento | ---                                                                                                |
+| Função       | Método | Caminho              | Parâmetros   | Body (exemplo)                                                                                     |
+|--------------|--------|----------------------|--------------|----------------------------------------------------------------------------------------------------|
+| Cadastro     | POST   | /api/evento/cadastro | ---          | { "nome": "Evento de Natal", "vagas": 3, "inicio": "2022-12-24T18:30", "fim": "2022-12-25T03:30" } |
+| Listar Todos | GET    | /api/evento/         | ---          | ---                                                                                                |
+| Buscar       | GET    | /api/evento/{id}     | ID do evento | ---                                                                                                |
 
 ### -> Usuário
 
-| Função              | Método | Caminho                | Parâmetros    | Body (exemplo)                      |
-|---------------------|--------|------------------------|---------------|-------------------------------------|
-| Cadastro            | POST   | /api/usuario/cadastro  | ---           | { "nome": "John Doe" }              |
-| Buscar              | GET    | /api/usuario/{id}      | ID do usuário | ---                                 |
-| Inscrever em Evento | POST   | /api/usuario/inscricao | ---           | { "evento_id": 0, "usuario_id": 0 } |
+| Função               | Método | Caminho                | Parâmetros    | Body (exemplo)                      |
+|----------------------|--------|------------------------|---------------|-------------------------------------|
+| Cadastro             | POST   | /api/usuario/cadastro  | ---           | { "nome": "John Doe" }              |
+| Buscar               | GET    | /api/usuario/{id}      | ID do usuário | ---                                 |
+| Inscrever em Evento  | POST   | /api/usuario/inscricao | ---           | { "evento_id": 1, "usuario_id": 2 } |
+| Cancelar Inscrição   | DELETE | /api/usuario/inscricao | ---           | { "evento_id": 1, "usuario_id": 2 } |
+| Participar do Evento | POST   | /api/usuario/entrar    | ---           | { "evento_id": 1, "usuario_id": 2 } |
 
-## :pencil: Considerações finais. :
+## :pencil: Observações. :
 
-Embora em um meio de produção a prioridade seja a entrega de todos os requisitos no prazo,
-durante o desenvolvimento deste projeto o meu foco foi utilizar diferentes tecnologias e
-explorar mais o java (como documentações, validações, criação de anotações, etc), visando
-buscar um diferencial, o que ocasionou na falta de alguns requisitos até o momento da entrega
-(como a participação de um usuário em um evento).
+- O desafio foi entregue novamente no dia 29 de Abril (sexta-feira), desta vez obedecendo todos os requisitos,
+  pois havia dúvidas sobre a data limite e por precaução foi entregue parcialmente no dia anterior (quinta-feira).
+- Embora não tenha sido especificado dentre os requisitos, foi optado em possibilitar que o usuário participe
+  apenas de 1 evento por vez. Ao entrar em outro evento, o usuário será automaticamente remotido do evento anterior.
+- A persistência dos dados não será mantida após o encerramento ou reinicialização da aplicação.
+- Para manter a estrutura dos dados semelhante ou enunciado do teste, foi escolhido desenvolver o projeto em
+  português (na maior parte).
