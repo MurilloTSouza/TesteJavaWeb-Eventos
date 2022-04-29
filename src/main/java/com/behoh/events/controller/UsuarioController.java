@@ -1,6 +1,6 @@
 package com.behoh.events.controller;
 
-import com.behoh.events.dto.InscricaoDTO;
+import com.behoh.events.dto.UsuarioEventoIdDTO;
 import com.behoh.events.dto.UsuarioCadastroDTO;
 import com.behoh.events.model.EventoEntity;
 import com.behoh.events.model.UsuarioEntity;
@@ -90,7 +90,7 @@ public class UsuarioController {
     //TODO: Separar responsábilidade de validações
     @PostMapping("/inscricao")
     public ResponseEntity inscricao(
-            @Valid @RequestBody InscricaoDTO inscricao,
+            @Valid @RequestBody UsuarioEventoIdDTO inscricao,
             BindingResult bindingResult){
 
         // ===========================

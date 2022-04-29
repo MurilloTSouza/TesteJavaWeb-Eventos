@@ -6,11 +6,11 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * Classe responsável por definir e validar parametros
- * de inscricao de um usuário em um evento.
+ * Contem apenas ID do usuário e evento,
+ * parametros comum entre algumas operações da API.
  */
 @Data
-public class InscricaoDTO {
+public class UsuarioEventoIdDTO {
 
     @ApiModelProperty("Número do ID do usuário.")
     @NotNull(message = "'usuario_id' é obrigatório.")
