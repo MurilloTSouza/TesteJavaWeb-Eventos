@@ -21,15 +21,16 @@ import java.time.format.DateTimeFormatter;
 public class EventoCadastroDTO implements InicioFim {
 
     @ApiModelProperty(value = "Nome do evento.", example = "Evento de Natal")
-    @NotBlank(message = "'nome' e obrigatorio.")
+    @NotBlank(message = "'nome' é obrigatório.")
     private String nome;
 
     @ApiModelProperty(value = "Númerde vagas. (min 1).", example = "3")
     @Min(value = 1, message = "'vagas' deve ser maior que zero.")
+    @NotNull(message = "'vagas' é obrigatório.")
     private Integer vagas;
 
     @ApiModelProperty(value = "Data de inicio. (data futura)", example = "2022-12-24T18:30")
-    @NotBlank(message = "'inicio' e obrigatorio.")
+    @NotBlank(message = "'inicio' é obrigatório.")
     @ParsableDate(message =
             "'inicio' deve conter uma data válida. Ex.: 2022-12-24T18:30")
     private String inicio;

@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UsuarioEntity {
 
     @Id
