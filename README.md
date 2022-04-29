@@ -63,8 +63,8 @@ De qualquer forma, segue uma tabela dos caminhos disponiveis até então:
 
 - O desafio foi entregue novamente no dia 29 de Abril (sexta-feira), desta vez obedecendo todos os requisitos,
   pois havia dúvidas sobre a data limite e por precaução foi entregue parcialmente no dia anterior (quinta-feira).
-- Embora não tenha sido especificado dentre os requisitos, foi optado em possibilitar que o usuário participe
-  apenas de 1 evento por vez. Ao entrar em outro evento, o usuário será automaticamente remotido do evento anterior.
+- Embora não tenha sido especificado dentre os requisitos, foi optado em restringir que o usuário participe
+  apenas de 1 evento por vez. Ao entrar em outro evento, o usuário será automaticamente removido do evento anterior.
 - A persistência dos dados não será mantida após o encerramento ou reinicialização da aplicação.
 - Para manter a estrutura dos dados semelhante ou enunciado do teste, foi escolhido desenvolver o projeto em
   português (na maior parte).
